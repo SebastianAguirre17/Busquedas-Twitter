@@ -1,12 +1,11 @@
 <?php
+    date_default_timezone_set('America/Argentina/Buenos_Aires');
     use \Psr\Http\Message\ServerRequestInterface as Request;
     use \Psr\Http\Message\ResponseInterface as Response;
     require_once './vendor/autoload.php';
-    require_once './clases/AccesoDatos.php';
+    require_once './clases/db.php';
 
     include "twitter-php/twitter.class.php";
-
-   
 
     $config['displayErrorDetails'] = true;
     $config['addContentLengthHeader'] = false;
@@ -15,9 +14,6 @@
 
 
     $app->group('/buscar', function () {
-        $this->get('/', function ($request, $response, $args) {
-            $response->getBody()->write("HOLA, Bienvenido a la apirest... ingresá un termino de busqueda");
-        });
         $this->get('/{termino}', function ($request, $response, $args) {
             $termino = buscar($args['termino']);
     
@@ -25,6 +21,25 @@
         });
     });
     
+    $app->get('/busquedas', function (Request $request, Response $response) {
+        $consulta = 'SELECT * FROM busquedas';
+
+        try {
+            //Instancia
+            $db = new DB();
+            //Conexion
+            $db = $db->conectar();
+            $ejecutar = $db->query($consulta);
+            $busquedas = $ejecutar->fetchAll(PDO::FETCH_OBJ);
+            $db = null;
+
+            return json_encode($busquedas);
+
+        }catch( PDOExeption $e){
+            echo '{"error": {"text": ' . $e->getMessage().'}';
+        }
+
+    });
 
     $app->run();
 
@@ -40,11 +55,10 @@
         $statuses = $twitter->search($termino);
         foreach ($statuses as $status) {
             array_push($mensajes, Twitter::clickable($status));
-            // echo " posted at " , $status->created_at .PHP_EOL;
-            // echo " posted by " , $status->user->name .PHP_EOL;
         }
-        // var_dump($mensajes);    
+        
         return json_encode($mensajes);
+       
     }
 
 ?>
