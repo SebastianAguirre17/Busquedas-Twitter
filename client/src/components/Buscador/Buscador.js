@@ -6,32 +6,20 @@ export default class Buscador extends Component {
         super();
         this.state = {
             statuses : {},
-            busquedas : {
-                termino : '',
-                fecha : ''
-            }
+            termino : ''
         }
         this.handleChange = this.handleChange.bind(this);
         this.buscarTweet = this.buscarTweet.bind(this);
     }
 
     buscarTweet = e => {
-        
         e.preventDefault();
-        this.callAPI();
+        
     }
 
-  
-    mostrarResultados = dato => {
-        console.log(dato)
-    }
-    
     handleChange = e =>{
         const { value } = e.target;
-        this.setState({ busquedas : {
-            termino : value,
-            fecha : Date.now()
-        }})
+        this.setState({ termino : value });
     }
 
     render() {
