@@ -1,28 +1,37 @@
 import React, { Component } from 'react';
-import { URL } from 'url';
 
 export default class Buscador extends Component {
     
-    state = {
-        statuses : {}
+    constructor(){
+        super();
+        this.state = {
+            statuses : {},
+            busquedas : {
+                termino : '',
+                fecha : ''
+            }
+        }
+        this.handleChange = this.handleChange.bind(this);
+        this.buscarTweet = this.buscarTweet.bind(this);
     }
 
     buscarTweet = e => {
+        
         e.preventDefault();
-        let termino = (e.target.children[0].lastChild.value);
         this.callAPI();
     }
 
-    callAPI() {
-        fetch('http://localhost:9000/search')
-            .then( res => res.json() )
-            .then( res => { 
-                this.mostrarResultados(res); 
-            }) 
-    }
-
+  
     mostrarResultados = dato => {
         console.log(dato)
+    }
+    
+    handleChange = e =>{
+        const { value } = e.target;
+        this.setState({ busquedas : {
+            termino : value,
+            fecha : Date.now()
+        }})
     }
 
     render() {
@@ -32,7 +41,7 @@ export default class Buscador extends Component {
                     <form className='w-50' method='POST' onSubmit={ this.buscarTweet }>
                         <div className="form-group">
                             <label>Tweet a buscar</label>
-                            <input type="text" name="input-buscador" id="input-buscador" className="form-control" placeholder="" aria-describedby="helpId"/>
+                            <input onChange={this.handleChange} type="text" name="input-buscador" id="input-buscador" className="form-control" placeholder="" aria-describedby="helpId"/>
                         </div>
                     </form>
                 </div>
