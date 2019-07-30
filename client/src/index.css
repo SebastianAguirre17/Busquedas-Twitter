@@ -42,4 +42,9 @@ body {
 
 .tweets {
     border-radius: 8px;
+    box-sizing: border-box;
+}
+
+p{
+    box-sizing: border-box;
 }

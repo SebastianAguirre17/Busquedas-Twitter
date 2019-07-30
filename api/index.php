@@ -16,7 +16,6 @@
     $app->group('/buscar', function () {
         $this->get('/{termino}', function ($request, $response, $args) {
             $termino = buscar($args['termino']);
-    
             $response->getBody()->write($termino);
         });
     });
@@ -44,21 +43,41 @@
     $app->run();
 
     function buscar($termino){
+        /* Datos Twiter */
         $consumerKey = 'R5dqmwj39qDKLuPaibVoPhwpu';
         $consumerSecret = 'hgapGawwxUvyGRXkKeuxIj6k0RplJyBfsLgP7LsSnlDNYPFGte';    
         $accessToken = '1549041253-SKzrdJO1SX5ventqvdDm6mD6ccQWDlbJIKkvCwW';         
         $accessTokenSecret = 'iPyJV0nndSeYhL97c0fS3OuEww7Omy1IrA3YBAElNQbJx';
-
         $twitter = new Twitter($consumerKey, $consumerSecret, $accessToken, $accessTokenSecret);
-
+        
+        /* Tweets */
         $mensajes = [];
         $statuses = $twitter->search($termino);
         foreach ($statuses as $status) {
             array_push($mensajes, Twitter::clickable($status));
         }
-        
+        guadarDato($termino);
         return json_encode($mensajes);
-       
+    }
+
+    function guadarDato($termino){
+        /* Guardar datos */
+        $fecha = date("D M j G:i:s T Y"); 
+        $consulta = 'INSERT INTO busquedas (busqueda, fecha) VALUES (:busqueda, :fecha)';
+        try{
+            $db = new DB();
+            $db = $db->conectar();
+
+            $stmt = $db->prepare($consulta);
+            $stmt->bindParam(':busqueda', $termino);
+            $stmt->bindParam(':fecha', $fecha);
+
+            $stmt->execute();
+
+        }catch( PDOExeption $e){
+            echo '{"error": {"text": ' . $e->getMessage().'}';
+        }
+
     }
 
 ?>
