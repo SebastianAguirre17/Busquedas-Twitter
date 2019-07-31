@@ -54,7 +54,7 @@
         $mensajes = [];
         $statuses = $twitter->search($termino);
         foreach ($statuses as $status) {
-            array_push($mensajes, Twitter::clickable($status));
+            array_push($mensajes, $status);
         }
         guadarDato($termino);
         return json_encode($mensajes);

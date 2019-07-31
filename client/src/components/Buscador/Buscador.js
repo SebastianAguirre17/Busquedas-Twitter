@@ -22,6 +22,7 @@ export default class Buscador extends Component {
     
     manejarTweets(listaDeTweets){
         this.setState({ tweets : listaDeTweets })
+        console.log(this.state.tweets)
     }
 
 
@@ -47,26 +48,25 @@ export default class Buscador extends Component {
                             <div className='bg-white m-3 p-3 tweets w-100' key={uuid.v4()}>
                                 <div className='d-flex align-items-center'>
                                     <figure>
-                                        <img className='avatar' src='public/image.png' alt=''/>
+                                        <img className='avatar' src={ tweet.user.profile_image_url } alt=''/>
                                     </figure>
-                                    <span className='displayName'>usuario</span>
-                                    <span className='username'>@unUsuario</span>
-                                    <span className='date'>hace un minuto</span>
+                                    <span className='displayName'> { tweet.user.screen_name} </span>
+                                    <span className='username'>{ tweet.user.name}</span>
+                                    <span className='date'> { tweet.created_at} </span>
                                 </div>
-                                <p className='text-left'>{tweet}</p>
+                                <p className='text-left'>{ tweet.text }</p>
                                 <div className='buttons'>
                                     <div className='icon'>
                                         <span className='fa fa-reply'></span>
-                                        <span className='numero'>0</span>
                                     </div>
                                     <div>
                                         <span className='fa fa-retweet'></span>
-                                        <span className='numero'>0</span>
+                                        <span className='numero'>{ tweet.retweet_count}</span>
                                     </div>
                                     
                                     <div>
                                         <span className='fa fa-star'></span>
-                                        <span className='numero'>0</span>
+                                        <span className='numero'>{ tweet.user.favourites_count }</span>
                                     </div>
                                 </div>
                             </div>
